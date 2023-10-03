@@ -4,10 +4,15 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import DeclareLaunchArgument
 
 from launch_ros.actions import Node
 
 def generate_launch_description():
+    robot_name_arg = DeclareLaunchArgument(
+        'robot_name',
+        default_value='robot1'
+    )
     basic_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('nav2_run'), 'launch'), 
@@ -26,11 +31,12 @@ def generate_launch_description():
          package='rviz2',
          executable='rviz2',
          name='rviz2',
-         arguments=['-d', rviz_config]
+        #  arguments=['-d', rviz_config]
     )
     
 
     return LaunchDescription([
+        robot_name_arg,
         basic_node,
         rviz_node 
     ])
