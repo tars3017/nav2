@@ -148,15 +148,15 @@ def generate_launch_description():
         default_value=os.path.join(bringup_dir, 'worlds', 'world_only.model'),
         description='Full path to world model file to load')
 
-    declare_robot_name_cmd = DeclareLaunchArgument(
-        'robot_name',
-        default_value='turtlebot3_waffle',
-        description='name of the robot')
+    # declare_robot_name_cmd = DeclareLaunchArgument(
+    #     'robot_name',
+    #     default_value='turtlebot3_waffle',
+    #     description='name of the robot')
 
-    declare_robot_sdf_cmd = DeclareLaunchArgument(
-        'robot_sdf',
-        default_value=os.path.join(bringup_dir, 'worlds', 'waffle.model'),
-        description='Full path to robot sdf file to spawn the robot in gazebo')
+    # declare_robot_sdf_cmd = DeclareLaunchArgument(
+    #     'robot_sdf',
+    #     default_value=os.path.join(bringup_dir, 'worlds', 'waffle.model'),
+    #     description='Full path to robot sdf file to spawn the robot in gazebo')
 
     # Specify the actions
     # start_gazebo_server_cmd = ExecuteProcess(
@@ -236,9 +236,9 @@ def generate_launch_description():
     ld.add_action(declare_use_robot_state_pub_cmd)
     ld.add_action(declare_use_rviz_cmd)
     ld.add_action(declare_simulator_cmd)
-    ld.add_action(declare_world_cmd)
-    ld.add_action(declare_robot_name_cmd)
-    ld.add_action(declare_robot_sdf_cmd)
+    # ld.add_action(declare_world_cmd)
+    # ld.add_action(declare_robot_name_cmd)
+    # ld.add_action(declare_robot_sdf_cmd)
     ld.add_action(declare_use_respawn_cmd)
 
     # Add any conditioned actions
@@ -247,7 +247,7 @@ def generate_launch_description():
     # ld.add_action(start_gazebo_spawner_cmd)
 
     # Add the actions to launch all of the navigation nodes
-    ld.add_action(start_robot_state_publisher_cmd)
+    # ld.add_action(start_robot_state_publisher_cmd)
     ld.add_action(rviz_cmd)
     ld.add_action(bringup_cmd)
 

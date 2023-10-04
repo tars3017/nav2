@@ -97,7 +97,7 @@ def generate_launch_description():
 
     declare_params_file_cmd = DeclareLaunchArgument(
         'params_file',
-        default_value=os.path.join(bringup_dir, 'params', 'nav2_params.yaml'),
+        default_value=os.path.join(nav2_run_dir, 'params', 'nav2_params.yaml'),
         description='Full path to the ROS2 parameters file to use for all launched nodes')
 
     declare_autostart_cmd = DeclareLaunchArgument(
@@ -148,6 +148,16 @@ def generate_launch_description():
             parameters=[configured_params],
             arguments=[{'yaml_filename': LaunchConfiguration('map')}],
             remappings=remappings
+        ),
+
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            name='map_to_odom',
+            arguments=[
+                '--frame-id', f'map',
+                '--child-frame-id', f'odom',
+            ]
         ),
 
         Node(
