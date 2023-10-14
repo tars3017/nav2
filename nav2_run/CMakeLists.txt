@@ -44,19 +44,8 @@ install(TARGETS
 )
 
 install(DIRECTORY 
-  launch
+  launch rviz maps params urdf
   DESTINATION share/${PROJECT_NAME})
 
-install(DIRECTORY
-  rviz 
-  DESTINATION share/${PROJECT_NAME})
-
-install(DIRECTORY
-  maps 
-  DESTINATION share/${PROJECT_NAME})
-
-install(DIRECTORY
-  params 
-  DESTINATION share/${PROJECT_NAME})
 
 ament_package()

@@ -22,8 +22,9 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch.substitutions import LaunchConfiguration, PythonExpression, Command
 from launch_ros.actions import Node
+from launch_ros.descriptions import ParameterValue
 
 
 def generate_launch_description():
@@ -148,42 +149,49 @@ def generate_launch_description():
         default_value=os.path.join(bringup_dir, 'worlds', 'world_only.model'),
         description='Full path to world model file to load')
 
-    # declare_robot_name_cmd = DeclareLaunchArgument(
-    #     'robot_name',
-    #     default_value='turtlebot3_waffle',
-    #     description='name of the robot')
+    declare_robot_name_cmd = DeclareLaunchArgument(
+        'robot_name',
+        default_value='sam_bot',
+        description='name of the robot')
 
-    # declare_robot_sdf_cmd = DeclareLaunchArgument(
-    #     'robot_sdf',
-    #     default_value=os.path.join(bringup_dir, 'worlds', 'waffle.model'),
-    #     description='Full path to robot sdf file to spawn the robot in gazebo')
+    declare_robot_sdf_cmd = DeclareLaunchArgument(
+        'robot_sdf',
+        default_value=os.path.join(bringup_dir, 'worlds', 'waffle.model'),
+        description='Full path to robot sdf file to spawn the robot in gazebo')
 
     # Specify the actions
-    # start_gazebo_server_cmd = ExecuteProcess(
-    #     condition=IfCondition(use_simulator),
-    #     cmd=['gzserver', '-s', 'libgazebo_ros_init.so',
-    #          '-s', 'libgazebo_ros_factory.so', world],
-    #     cwd=[launch_dir], output='screen')
+    start_gazebo_server_cmd = ExecuteProcess(
+        condition=IfCondition(use_simulator),
+        cmd=['gzserver', '-s', 'libgazebo_ros_ini',
+             '-s', 'libgazebo_ros_factory.so', world],
+        cwd=[launch_dir], output='screen')
 
-    # start_gazebo_client_cmd = ExecuteProcess(
-    #     condition=IfCondition(PythonExpression(
-    #         [use_simulator, ' and not ', headless])),
-    #     cmd=['gzclient'],
-    #     cwd=[launch_dir], output='screen')
+    start_gazebo_client_cmd = ExecuteProcess(
+        condition=IfCondition(PythonExpression(
+            [use_simulator, ' and not ', headless])),
+        cmd=['gzclient'],
+        cwd=[launch_dir], output='screen')
 
-    urdf = os.path.join(bringup_dir, 'urdf', 'turtlebot3_waffle.urdf')
-    with open(urdf, 'r') as infp:
-        robot_description = infp.read()
+    urdf = os.path.join(nav2_run_dir, 'urdf','diff_drive.urdf')
+    print("===== urdf file ======" + urdf)
+    # with open(urdf, 'r') as infp:
+    #     robot_description = infp.read()
+
+    declare_path_to_urdf = DeclareLaunchArgument(
+        name='path_to_urdf',
+        default_value=urdf,
+        description='Absolute path to robot urdf file' 
+    )
 
     start_robot_state_publisher_cmd = Node(
-        condition=IfCondition(use_robot_state_pub),
+        # condition=IfCondition(use_robot_state_pub),
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
         namespace=namespace,
         output='screen',
         parameters=[{'use_sim_time': use_sim_time,
-                     'robot_description': robot_description}],
+                     'robot_description': Command(['xacro ', urdf])}],
         remappings=remappings)
 
     start_gazebo_spawner_cmd = Node(
@@ -236,17 +244,18 @@ def generate_launch_description():
     ld.add_action(declare_use_robot_state_pub_cmd)
     ld.add_action(declare_use_rviz_cmd)
     ld.add_action(declare_simulator_cmd)
-    # ld.add_action(declare_world_cmd)
-    # ld.add_action(declare_robot_name_cmd)
-    # ld.add_action(declare_robot_sdf_cmd)
+    ld.add_action(declare_world_cmd)
+    ld.add_action(declare_robot_name_cmd)
+    ld.add_action(declare_robot_sdf_cmd)
     ld.add_action(declare_use_respawn_cmd)
 
     # Add any conditioned actions
-    # ld.add_action(start_gazebo_server_cmd)
-    # ld.add_action(start_gazebo_client_cmd)
-    # ld.add_action(start_gazebo_spawner_cmd)
+    ld.add_action(start_gazebo_server_cmd)
+    ld.add_action(start_gazebo_client_cmd)
+    ld.add_action(start_gazebo_spawner_cmd)
 
     # Add the actions to launch all of the navigation nodes
+    ld.add_action(declare_path_to_urdf)
     ld.add_action(start_robot_state_publisher_cmd)
     ld.add_action(rviz_cmd)
     ld.add_action(bringup_cmd)

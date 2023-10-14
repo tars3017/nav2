@@ -16,5 +16,9 @@ setup(
             glob(os.path.join('maps', '*.yaml'))) 
         (os.path.join('share', package_name, 'maps'),
             glob(os.path.join('maps', '*.pgm'))) 
+        (os.path.join('share', package_name, 'urdf'),
+            glob(os.path.join('urdf', '*.urdf.xacro'))) 
+        (os.path.join('share', package_name, 'mesh'),
+            glob(os.path.join('mesh', '*.stl'))) 
     ]
 )
