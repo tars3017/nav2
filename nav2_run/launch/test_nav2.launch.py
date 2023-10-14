@@ -160,17 +160,25 @@ def generate_launch_description():
         description='Full path to robot sdf file to spawn the robot in gazebo')
 
     # Specify the actions
-    start_gazebo_server_cmd = ExecuteProcess(
-        condition=IfCondition(use_simulator),
-        cmd=['gzserver', '-s', 'libgazebo_ros_ini',
-             '-s', 'libgazebo_ros_factory.so', world],
-        cwd=[launch_dir], output='screen')
+    # start_gazebo_server_cmd = ExecuteProcess(
+    #     condition=IfCondition(use_simulator),
+    #     cmd=['gzserver', '-s', 'libgazebo_ros_ini',
+    #          '-s', 'libgazebo_ros_factory.so', world],
+    #     cwd=[launch_dir], output='screen')
 
-    start_gazebo_client_cmd = ExecuteProcess(
-        condition=IfCondition(PythonExpression(
-            [use_simulator, ' and not ', headless])),
-        cmd=['gzclient'],
-        cwd=[launch_dir], output='screen')
+    # start_gazebo_client_cmd = ExecuteProcess(
+    #     condition=IfCondition(PythonExpression(
+    #         [use_simulator, ' and not ', headless])),
+    #     cmd=['gzclient'],
+    #     cwd=[launch_dir], output='screen')
+    
+    start_gazebo_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
+        )
+    )
+    
+    
 
     urdf = os.path.join(nav2_run_dir, 'urdf','diff_drive.urdf')
     print("===== urdf file ======" + urdf)
@@ -194,16 +202,25 @@ def generate_launch_description():
                      'robot_description': Command(['xacro ', urdf])}],
         remappings=remappings)
 
+    # start_gazebo_spawner_cmd = Node(
+    #     package='gazebo_ros',
+    #     executable='spawn_entity.py',
+    #     output='screen',
+    #     arguments=[
+    #         '-entity', robot_name,
+    #         '-file', robot_sdf,
+    #         '-robot_namespace', namespace,
+    #         '-x', pose['x'], '-y', pose['y'], '-z', pose['z'],
+    #         '-R', pose['R'], '-P', pose['P'], '-Y', pose['Y']])
+
     start_gazebo_spawner_cmd = Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
         output='screen',
         arguments=[
             '-entity', robot_name,
-            '-file', robot_sdf,
-            '-robot_namespace', namespace,
-            '-x', pose['x'], '-y', pose['y'], '-z', pose['z'],
-            '-R', pose['R'], '-P', pose['P'], '-Y', pose['Y']])
+            '-topic', '/robot_description',
+        ])
 
     rviz_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -250,9 +267,10 @@ def generate_launch_description():
     ld.add_action(declare_use_respawn_cmd)
 
     # Add any conditioned actions
-    ld.add_action(start_gazebo_server_cmd)
-    ld.add_action(start_gazebo_client_cmd)
-    ld.add_action(start_gazebo_spawner_cmd)
+    # ld.add_action(start_gazebo_server_cmd)
+    # ld.add_action(start_gazebo_client_cmd)
+    # ld.add_action(start_gazebo_spawner_cmd)
+    
 
     # Add the actions to launch all of the navigation nodes
     ld.add_action(declare_path_to_urdf)
@@ -260,4 +278,7 @@ def generate_launch_description():
     ld.add_action(rviz_cmd)
     ld.add_action(bringup_cmd)
 
+    # Add my own gazebo
+    # ld.add_action(start_gazebo_cmd)
+    # ld.add_action(start_gazebo_spawner_cmd)
     return ld
