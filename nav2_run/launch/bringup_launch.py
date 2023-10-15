@@ -105,7 +105,7 @@ def generate_launch_description():
         description='Automatically startup the nav2 stack')
 
     declare_use_composition_cmd = DeclareLaunchArgument(
-        'use_composition', default_value='True',
+        'use_composition', default_value='False',
         description='Whether to use composed bringup')
 
     declare_use_respawn_cmd = DeclareLaunchArgument(
@@ -132,12 +132,12 @@ def generate_launch_description():
             output='screen'),
 
         
-        Node(
-            package='nav2_run',
-            executable='odometry_sim',
-            name='odom',
-            output='screen',
-        ),
+        # Node(
+        #     package='nav2_run',
+        #     executable='odometry_sim',
+        #     name='odom',
+        #     output='screen',
+        # ),
         Node(
             package='nav2_map_server',
             executable='map_server',

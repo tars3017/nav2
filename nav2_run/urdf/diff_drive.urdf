@@ -127,14 +127,21 @@
     <parent link="base_link"/>
     <child link="front_caster"/>
     <origin xyz="${caster_xoff} 0.0 ${-(base_height/2)}" rpy="0 0 0"/>
+    <axix xyz="1 1 1" />
   </joint>
 
  
   <gazebo>
     <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
       <ros>
-        <namespace>/demo</namespace>
+        <namespace></namespace>
       </ros>
+
+      <!-- about odometry parameter-->
+      <!-- <publishWheelTF>true</publishWheelTF> -->
+      <publishWheelJointState>true</publishWheelJointState>
+      <!-- <publish_wheel_joint_state>true</publish_wheel_joint_state> -->
+      <odometry_topic>odom</odometry_topic>
 
       <!-- wheels -->
       <left_joint>drivewhl_l_joint</left_joint>
@@ -150,12 +157,18 @@
 
       <!-- output -->
       <publish_odom>true</publish_odom>
-      <publish_odom_tf>false</publish_odom_tf>
+      <publish_odom_tf>true</publish_odom_tf>
       <publish_wheel_tf>true</publish_wheel_tf>
 
       <odometry_frame>odom</odometry_frame>
       <robot_base_frame>base_link</robot_base_frame>
     </plugin>
+
+
+    <!-- <plugin name='gazebo_ros_control' filename='libgazebo_ros_control.so'>
+      <robotNamespace></robotNamespace>
+      
+    </plugin> -->
   </gazebo>
 
 </robot>
