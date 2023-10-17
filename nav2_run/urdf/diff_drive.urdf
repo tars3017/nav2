@@ -6,7 +6,7 @@
   <xacro:property name="base_length" value="0.42"/>
   <xacro:property name="base_height" value="0.18"/>
 
-  <xacro:property name="wheel_radius" value="0.10"/>
+  <xacro:property name="wheel_radius" value="0.1"/>
   <xacro:property name="wheel_width" value="0.04"/>
   <xacro:property name="wheel_ygap" value="0.025"/>
   <xacro:property name="wheel_zoff" value="0.05"/>
@@ -55,7 +55,7 @@
       </geometry>
     </collision>
 
-    <xacro:box_inertia m="15" w="${base_width}" d="${base_length}" h="${base_height}"/>
+    <xacro:box_inertia m="30" w="${base_width}" d="${base_length}" h="${base_height}"/>
   </link>
   
    <!-- Robot Footprint -->
@@ -118,17 +118,25 @@
       <geometry>
         <sphere radius="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
       </geometry>
+      <surface>
+        <friction>
+          <mu>0</mu>
+          <mu2>0</mu2>
+        </friction>
+      </surface>
     </collision>
+
 
     <xacro:sphere_inertia m="0.5" r="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
   </link>
 
-  <joint name="caster_joint" type="fixed">
+  <joint name="caster_joint" type="continuous">
     <parent link="base_link"/>
     <child link="front_caster"/>
     <origin xyz="${caster_xoff} 0.0 ${-(base_height/2)}" rpy="0 0 0"/>
-    <axix xyz="1 1 1" />
+    <axis xyz="0 1 0"/>
   </joint>
+
 
  
   <gazebo>
@@ -152,8 +160,8 @@
       <wheel_diameter>0.2</wheel_diameter>
 
       <!-- limits -->	
-      <max_wheel_torque>20</max_wheel_torque>
-      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+      <max_wheel_torque>50</max_wheel_torque>
+      <max_wheel_acceleration>3.0</max_wheel_acceleration>
 
       <!-- output -->
       <publish_odom>true</publish_odom>
