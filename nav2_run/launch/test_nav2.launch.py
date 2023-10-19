@@ -137,7 +137,7 @@ def generate_launch_description():
 
     declare_simulator_cmd = DeclareLaunchArgument(
         'headless',
-        default_value='True',
+        default_value='False',
         description='Whether to execute gzclient)')
 
     declare_world_cmd = DeclareLaunchArgument(
@@ -146,7 +146,7 @@ def generate_launch_description():
         #              https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/91
         # default_value=os.path.join(get_package_share_directory('turtlebot3_gazebo'),
         # worlds/turtlebot3_worlds/waffle.model')
-        default_value=os.path.join(bringup_dir, 'worlds', 'world_only.model'),
+        default_value=os.path.join(nav2_run_dir, 'world', 'playground.world'),
         description='Full path to world model file to load')
 
     declare_robot_name_cmd = DeclareLaunchArgument(
@@ -165,6 +165,7 @@ def generate_launch_description():
     #     cmd=['gzserver', '-s', 'libgazebo_ros_ini',
     #          '-s', 'libgazebo_ros_factory.so', world],
     #     cwd=[launch_dir], output='screen')
+    # -s flag indicates it is a system plugin, and <plugin_filename> is the name of a shared library found in GAZEBO_PLUGIN_PATH
 
     # start_gazebo_client_cmd = ExecuteProcess(
     #     condition=IfCondition(PythonExpression(
@@ -174,9 +175,10 @@ def generate_launch_description():
     
     start_gazebo_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
-        )
+            os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')),
+            launch_arguments={'world': LaunchConfiguration('world')}.items(),
     )
+
     
     
 
@@ -228,6 +230,8 @@ def generate_launch_description():
         arguments=[
             '-entity', robot_name,
             '-topic', '/robot_description',
+            '-x', '0.5',
+            '-y', '0.3'
         ])
 
     rviz_cmd = IncludeLaunchDescription(
@@ -288,6 +292,6 @@ def generate_launch_description():
     ld.add_action(bringup_cmd)
 
     # Add my own gazebo
-    # ld.add_action(start_gazebo_cmd)
-    # ld.add_action(start_gazebo_spawner_cmd)
+    ld.add_action(start_gazebo_cmd)
+    ld.add_action(start_gazebo_spawner_cmd)
     return ld

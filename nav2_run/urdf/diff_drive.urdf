@@ -179,4 +179,47 @@
     </plugin> -->
   </gazebo>
 
+
+  <!-- setting up imu -->
+  <!-- <link name="imu_link">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </collision>
+
+    <xacro:box_inertia m="0.1" w="0.1" d="0.1" h="0.1"/>
+  </link> -->
+
+  <!-- <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0.01"/>
+  </joint> -->
+
+
+  <!-- <gazebo reference="imu_link">
+    <sensor type="imu" name="imu1">
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>imu</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>10.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>imu_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+    </sensor>
+  </gazebo> -->
+
 </robot>

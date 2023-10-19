@@ -43,7 +43,7 @@ bt_navigator:
   ros__parameters:
     use_sim_time: True
     global_frame: map
-    robot_base_frame: base_link
+    robot_base_frame: base_footprint
     odom_topic: /odom
     bt_loop_duration: 10
     default_server_timeout: 20
@@ -71,7 +71,7 @@ bt_navigator:
       - nav2_reinitialize_global_localization_service_bt_node
       - nav2_rate_controller_bt_node
       - nav2_distance_controller_bt_node
-      - nav2_speed_controller_bt_node
+      # - nav2_speed_controller_bt_node
       - nav2_truncate_path_action_bt_node
       - nav2_truncate_path_local_action_bt_node
       - nav2_goal_updater_node_bt_node
@@ -196,14 +196,15 @@ controller_server:
           
       # Robot
               
-      max_vel_x: 0.26
-      max_vel_theta: 1.0 
+      max_vel_x: 1.0
+      max_vel_x_backwards: 1.0
+      max_vel_theta: 2.5
       acc_lim_x: 2.5
       acc_lim_theta: 3.2
 
       footprint_model: # types: "point", "circular", "two_circles", "line", "polygon"
         type: "circular"
-        radius: 0.144 # for type "circular"
+        radius: 0.17 # for type "circular"
 
       # GoalTolerance
       xy_goal_tolerance: 0.02
@@ -212,11 +213,11 @@ controller_server:
           
       # Obstacles
           
-      min_obstacle_dist: 0.27
+      min_obstacle_dist: 0.1
       inflation_dist: 0.6
       include_costmap_obstacles: True
-      costmap_obstacles_behind_robot_dist: 1.0
-      obstacle_poses_affected: 15
+      costmap_obstacles_behind_robot_dist: 0.2
+      obstacle_poses_affected: 30
 
       dynamic_obstacle_inflation_dist: 0.6
       include_dynamic_obstacles: False 
@@ -232,13 +233,13 @@ controller_server:
       optimization_activate: True
       optimization_verbose: False
       penalty_epsilon: 0.1
-      obstacle_cost_exponent: 4.0
-      weight_max_vel_x: 0.1
+      obstacle_cost_exponent: 6.0
+      weight_max_vel_x: 0.7
       weight_max_vel_theta: 0.5
       weight_acc_lim_x: 0.1
       weight_acc_lim_theta: 10.5
       weight_kinematics_nh: 1000.0
-      weight_kinematics_forward_drive: 3.0
+      weight_kinematics_forward_drive: 1.0
       weight_kinematics_turning_radius: 0.0
       weight_optimaltime: 1.0 # must be > 0
       # weight_shortest_path: 0.0
@@ -296,13 +297,13 @@ local_costmap:
       update_frequency: 5.0
       publish_frequency: 2.0
       global_frame: odom
-      robot_base_frame: base_link
+      robot_base_frame: base_footprint
       use_sim_time: True
       rolling_window: true
       width: 3
       height: 3
       resolution: 0.05
-      robot_radius: 0.22
+      robot_radius: 0.17
       plugins: ["static_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
@@ -339,9 +340,9 @@ global_costmap:
       update_frequency: 1.0
       publish_frequency: 1.0
       global_frame: map
-      robot_base_frame: base_link
+      robot_base_frame: base_footprint
       use_sim_time: True
-      robot_radius: 0.22
+      robot_radius: 0.17
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "inflation_layer"]
@@ -421,7 +422,7 @@ behavior_server:
     assisted_teleop:
       plugin: "nav2_behaviors/AssistedTeleop"
     global_frame: odom
-    robot_base_frame: base_link
+    robot_base_frame: base_footprint
     transform_tolerance: 0.1
     use_sim_time: true
     simulate_ahead_time: 2.0
@@ -450,8 +451,8 @@ velocity_smoother:
     smoothing_frequency: 20.0
     scale_velocities: False
     feedback: "OPEN_LOOP"
-    max_velocity: [0.26, 0.0, 1.0]
-    min_velocity: [-0.26, 0.0, -1.0]
+    max_velocity: [0.56, 0.0, 1.7]
+    min_velocity: [-0.56, 0.0, -1.7]
     max_accel: [2.5, 0.0, 3.2]
     max_decel: [-2.5, 0.0, -3.2]
     odom_topic: "odom"

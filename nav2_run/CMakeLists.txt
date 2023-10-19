@@ -44,7 +44,7 @@ install(TARGETS
 )
 
 install(DIRECTORY 
-  launch rviz maps params urdf
+  launch rviz maps params urdf world
   DESTINATION share/${PROJECT_NAME})
 
 
