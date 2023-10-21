@@ -2,11 +2,11 @@
 <robot name="sam_bot" xmlns:xacro="http://ros.org/wiki/xacro">
 
   <!-- Define robot constants -->
-  <xacro:property name="base_width" value="0.31"/>
-  <xacro:property name="base_length" value="0.42"/>
-  <xacro:property name="base_height" value="0.18"/>
+  <xacro:property name="base_width" value="0.133"/>
+  <xacro:property name="base_length" value="0.265"/>
+  <xacro:property name="base_height" value="0.347"/>
 
-  <xacro:property name="wheel_radius" value="0.1"/>
+  <xacro:property name="wheel_radius" value="0.05735"/>
   <xacro:property name="wheel_width" value="0.04"/>
   <xacro:property name="wheel_ygap" value="0.025"/>
   <xacro:property name="wheel_zoff" value="0.05"/>
@@ -95,7 +95,7 @@
     <joint name="${prefix}_joint" type="continuous">
       <parent link="base_link"/>
       <child link="${prefix}_link"/>
-      <origin xyz="${x_reflect*wheel_xoff} ${y_reflect*(base_width/2+wheel_ygap)} ${-wheel_zoff}" rpy="0 0 0"/>
+      <origin xyz="${x_reflect*wheel_xoff} ${y_reflect*(base_width/2+wheel_ygap)} ${-base_height/2+wheel_zoff}" rpy="0 0 0"/>
       <axis xyz="0 1 0"/>
     </joint>
   </xacro:macro>
@@ -106,7 +106,7 @@
   <link name="front_caster">
     <visual>
       <geometry>
-        <sphere radius="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+        <sphere radius="${wheel_radius-wheel_zoff}"/>
       </geometry>
       <material name="Cyan">
         <color rgba="0 1.0 1.0 1.0"/>
@@ -116,7 +116,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <sphere radius="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+        <sphere radius="${wheel_radius-wheel_zoff}"/>
       </geometry>
       <surface>
         <friction>
@@ -127,7 +127,7 @@
     </collision>
 
 
-    <xacro:sphere_inertia m="0.5" r="${(wheel_radius+wheel_zoff-(base_height/2))}"/>
+    <xacro:sphere_inertia m="0.5" r="${wheel_radius-wheel_zoff}"/>
   </link>
 
   <joint name="caster_joint" type="continuous">
